@@ -1,0 +1,32 @@
+[package]
+name = "lfq"
+version = "0.1.0"
+edition = "2021"
+description = "Lock-free queues with the memory orderings spelled out: a single-producer ring, a bounded multi-producer queue and an unbounded queue with hazard pointers. Checked with loom."
+license = "MIT"
+
+[lib]
+name = "lfq"
+
+[features]
+# Inject delays at the points where a thread holds a pointer it has not used yet (for the stress tests).
+chaos = []
+
+[dependencies]
+
+[target.'cfg(loom)'.dependencies]
+loom = "0.7"
+
+[dev-dependencies]
+crossbeam-queue = "0.3"
+
+[target.'cfg(windows)'.dev-dependencies]
+windows-sys = { version = "0.61", features = ["Win32_System_Memory"] }
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(loom)'] }
+
+[profile.release]
+lto = true
+codegen-units = 1
+debug = false
